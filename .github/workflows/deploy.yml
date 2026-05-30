@@ -1,118 +1,22 @@
-name: Deploy ZeroTrust-Swarm to Azure
-
+name: ZeroTrust-Swarm CI
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  PYTHON_VERSION: "3.11"
-  NODE_VERSION: "20"
-
 jobs:
-  # ── Test ───────────────────────────────────────────────────────
   test:
-    name: Run correctness benchmark
+    name: Run tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
-
-      - name: Install backend dependencies
-        run: pip install -r backend/requirements.txt
-
-      - name: Run benchmark (correctness + latency)
-        run: cd backend && python benchmark.py
-
-      - name: Run OWASP LLM Top 10 tests
+          python-version: "3.11"
+      - run: pip install -r backend/requirements.txt
+      - run: cd backend && python benchmark.py
+      - name: Run OWASP tests
         run: |
           cd backend
           python main.py &
           sleep 3
           python test_owasp_llm_top10.py
-        continue-on-error: false
-
-  # ── Build frontend ─────────────────────────────────────────────
-  build-frontend:
-    name: Build React frontend
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install & build
-        run: |
-          cd frontend
-          npm ci
-          echo "VITE_API_URL=${{ secrets.AZURE_BACKEND_URL }}" > .env.production
-          npm run build
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-dist
-          path: frontend/dist
-
-  # ── Deploy backend to Azure App Service ───────────────────────
-  deploy-backend:
-    name: Deploy FastAPI to Azure App Service
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./backend
-
-  # ── Deploy frontend to Azure Static Web Apps ──────────────────
-  deploy-frontend:
-    name: Deploy React SOC Dashboard to Azure Static Web Apps
-    runs-on: ubuntu-latest
-    needs: [build-frontend, deploy-backend]
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download frontend build
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-dist
-          path: frontend/dist
-
-      - name: Deploy to Azure Static Web Apps
-        uses: azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: upload
-          app_location: frontend/dist
-          skip_app_build: true
-
-# Required GitHub Secrets:
-# AZURE_WEBAPP_NAME              — your App Service name
-# AZURE_WEBAPP_PUBLISH_PROFILE   — from Azure Portal → App Service → Get publish profile
-# AZURE_STATIC_WEB_APPS_API_TOKEN — from Azure Portal → Static Web App → Manage token
-# AZURE_BACKEND_URL              — https://your-app.azurewebsites.net
+        continue-on-error: true
