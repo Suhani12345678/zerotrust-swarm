@@ -35,7 +35,7 @@ jobs:
           cd backend
           python main.py &
           sleep 3
-          python ../test_owasp_llm_top10.py
+          python backend/test_owasp_llm_top10.py
         continue-on-error: false
 
   # ── Build frontend ─────────────────────────────────────────────
