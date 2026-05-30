@@ -189,7 +189,7 @@ Open http://localhost:5173 → click any scenario under  Inspect tab.
 
 | Name | Role |
 |------|------|
-| **[]** | Full-stack + AI Security Architecture |
+| **[Suhani Behl]** | Full-stack + AI Security Architecture |
 
 *college-University of Jammu/Teamamte- Divya Verma.*
 
