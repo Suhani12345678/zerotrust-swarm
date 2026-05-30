@@ -120,7 +120,7 @@ n = 1,000 inspections (3-agent swarm, local AI + obfuscation decode, SQLite)
 ### Step 1 — Clone & configure
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/zerotrust-swarm.git
+git clone https://github.com/Suhani12345678/zerotrust-swarm.git
 cd zerotrust-swarm
 cp .env.example .env
 ```
@@ -148,11 +148,17 @@ npm run dev
 # → SOC Dashboard at http://localhost:5173
 ```
 
-### Step 4 — Run demo
+### Step 4 — Live Demo
 
-Open http://localhost:5173 → click any scenario under  Inspect tab.
+| Service                      | URL                                                      |
+| ---------------------------- | -------------------------------------------------------- |
+| **SOC Dashboard (Frontend)** | https://zerotrust-swarm-hanumate-s-projects.vercel.app   |
+| **API Backend**              | https://zerotrust-swarm-production.up.railway.app        |
+| **API Docs (Swagger)**       | https://zerotrust-swarm-production.up.railway.app/docs   |
+| **Health Check**             | https://zerotrust-swarm-production.up.railway.app/health |
 
----
+> Test credentials not required — demo agents pre-loaded.
+
 
 ## Deploy (Free, No Credit Card)
 
@@ -187,11 +193,10 @@ Open http://localhost:5173 → click any scenario under  Inspect tab.
 
 ## Team
 
-| Name | Role |
-|------|------|
-| **[Suhani Behl]** | Full-stack + AI Security Architecture |
+| **Suhani Behl** | Full-stack + AI Security Architecture |
+| **Divya Verma** | Full-stack + AI Security Architecture |
 
-*college-University of Jammu/Teamamte- Divya Verma.*
+*University of Jammu
 
 ---
 
